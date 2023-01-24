@@ -10,7 +10,7 @@
 <body>
 	<jsp:useBean id="tracks" scope="session" class="org.example.Bean.Tracks"></jsp:useBean>
 	<%
-		if(tracks==null || tracks.getTracks().size()==0)
+		if(tracks==null || tracks.getTracks().size()==0)//if the list of tracks is empty get it with a servlet
 			response.sendRedirect("/CrudOperations-0.0.1-SNAPSHOT/ServletSelect");
 	%>
 	<form method="get" action="welcome.jsp">

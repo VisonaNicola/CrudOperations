@@ -11,7 +11,7 @@
 <body>
 	<jsp:useBean id="albums" scope="session" class="org.example.Bean.Albums"></jsp:useBean>
 	<jsp:useBean id="genres" scope="session" class="org.example.Bean.Genres"></jsp:useBean>
-	<%
+	<%	//if the list of albums or the list of genres is empty get them with a servlet
 		if(albums == null || genres == null || albums.getAlbums().size()==0 || genres.getGenres().size()==0)
 			response.sendRedirect("/CrudOperations-0.0.1-SNAPSHOT/ServletInsert");
 	%>

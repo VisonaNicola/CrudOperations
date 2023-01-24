@@ -32,7 +32,6 @@ public class ServletSelect extends HttpServlet {
      */
     public ServletSelect() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
@@ -40,34 +39,10 @@ public class ServletSelect extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("GET REQUEST ON /ServletSelect");
-		try {
-			DataSource ds = (DataSource) new InitialContext().lookup("java:/sqliteds");//get connection through datasource
-			Connection conn = ds.getConnection();
-			
-			Tracks tracks = new Tracks();//create tracks bean
-			
-			//get all tracks from db
-			Statement stmt=conn.createStatement();  
-			ResultSet rs=stmt.executeQuery("SELECT tracks.TrackId, tracks.Name, albums.Title, genres.Name as genre, tracks.Composer FROM tracks, genres, albums WHERE tracks.AlbumId = albums.AlbumId AND genres.GenreId = tracks.GenreId ORDER BY tracks.TrackId");
-			
-			//add tracks to bean
-			while(rs.next()){  
-				//System.out.println(rs.getInt(1)+"; "+rs.getString(2)+"; "+rs.getString(3)+"; "+rs.getString(4)+"; "+rs.getString(5));
-				tracks.addTrack(new Track(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5)));
-			}
-			
-			//add bean to session
-			HttpSession session = request.getSession();
-			session.setAttribute("tracks", tracks);
-		} catch (NamingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		request.getRequestDispatcher("gettracks.jsp").forward(request, response);
+
+		request.setAttribute("choice", 1);
+		request.setAttribute("destination", "gettracks.jsp");
+		request.getRequestDispatcher("/ServletGetInfo").forward(request, response);
 	}
 
 	/**

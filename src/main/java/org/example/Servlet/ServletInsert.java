@@ -33,7 +33,6 @@ public class ServletInsert extends HttpServlet {
      */
     public ServletInsert() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
@@ -42,43 +41,9 @@ public class ServletInsert extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("GET REQUEST ON /ServletInsert");
 
-		try {
-			DataSource ds = (DataSource) new InitialContext().lookup("java:/sqliteds");//get connection through datasource
-			Connection conn = ds.getConnection();
-			
-			//get all albums
-			Statement stmt=conn.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT AlbumId, Title FROM albums");
-			
-			Albums albums = new Albums();	//create album bean
-			
-			//add albums to bean
-			while(rs.next()){  
-				albums.addAlbum(new Album(rs.getInt(1),rs.getString(2)));
-			}
-			
-			//get all genres
-			rs = stmt.executeQuery("SELECT GenreId, Name FROM genres");
-			
-			Genres genres = new Genres();	//create genres bean
-			
-			//add genres to bean
-			while(rs.next()){  
-				genres.addGenre(new Genre(rs.getInt(1),rs.getString(2)));
-			}
-			
-			//add beans to session
-			HttpSession session = request.getSession();
-			session.setAttribute("albums", albums);
-			session.setAttribute("genres", genres);
-		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		request.getRequestDispatcher("inserttrack.jsp").forward(request, response);
+		request.setAttribute("choice", 2);
+		request.setAttribute("destination", "inserttrack.jsp");
+		request.getRequestDispatcher("/ServletGetInfo").forward(request, response);
 	}
 
 	/**
@@ -106,11 +71,11 @@ public class ServletInsert extends HttpServlet {
 			String query = "INSERT INTO tracks (Name, AlbumId, MediatypeId, GenreId, Composer, Milliseconds, Bytes, UnitPrice) values ('"+name+"', '"+albumid+"', '"+mediatype+"', '"+genreid+"', '"+composer+"', '"+milliseconds+"', '"+bytes+"', '"+unitprice+"')";
 			//System.out.println(query);
 			stmt.executeUpdate(query);
-		} catch (SQLException e) {
+		} catch (SQLException e) {//TODO redirect to error page
 			System.err.println(e.getMessage());
 			e.printStackTrace();
 		} catch (NamingException e) {
-			// TODO Auto-generated catch block
+			System.err.println(e.getMessage());
 			e.printStackTrace();
 		}
 		response.sendRedirect("/CrudOperations-0.0.1-SNAPSHOT/ServletSelect");

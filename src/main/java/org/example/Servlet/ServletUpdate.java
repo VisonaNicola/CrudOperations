@@ -31,7 +31,6 @@ public class ServletUpdate extends HttpServlet {
      */
     public ServletUpdate() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
@@ -39,33 +38,10 @@ public class ServletUpdate extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("GET REQUEST ON /ServletUpdate");
-		try {
-			Tracks tracks = new Tracks();	//create tracks bean
-			DataSource ds = (DataSource) new InitialContext().lookup("java:/sqliteds");//get connection through datasource
-			Connection conn = ds.getConnection();
-			
-			//get tracks from db
-			Statement stmt=conn.createStatement();  
-			ResultSet rs=stmt.executeQuery("SELECT tracks.TrackId, tracks.Name, albums.Title, genres.Name as genre, tracks.Composer FROM tracks, genres, albums WHERE tracks.AlbumId = albums.AlbumId AND genres.GenreId = tracks.GenreId ORDER BY tracks.TrackId");
-			
-			//add tracks to bean
-			while(rs.next()){  
-				//System.out.println(rs.getInt(1)+"; "+rs.getString(2)+"; "+rs.getString(3)+"; "+rs.getString(4)+"; "+rs.getString(5));
-				tracks.addTrack(new Track(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5)));
-			}
-			
-			//add bean to session
-			HttpSession session = request.getSession();
-			session.setAttribute("tracks", tracks);
-			
-		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		request.getRequestDispatcher("updatetrack.jsp").forward(request, response);
+
+		request.setAttribute("choice", 1);
+		request.setAttribute("destination", "updatetrack.jsp");
+		request.getRequestDispatcher("/ServletGetInfo").forward(request, response);
 	}
 
 	/**
@@ -125,11 +101,11 @@ public class ServletUpdate extends HttpServlet {
 			//System.out.println(query);
 			//execute query
 			stmt.executeUpdate(query);
-		}catch (SQLException e) {
+		}catch (SQLException e) {	//TODO redirect to error page
 			System.err.println(e.getMessage());
 			e.printStackTrace();
 		} catch (NamingException e) {
-			// TODO Auto-generated catch block
+			System.err.println(e.getMessage());
 			e.printStackTrace();
 		}
 		response.sendRedirect("/CrudOperations-0.0.1-SNAPSHOT/ServletSelect");

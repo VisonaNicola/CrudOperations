@@ -21,7 +21,6 @@ import org.example.Bean.Tracks;
 
 /**
  * This servlet is used to delete a track from the db.
- * 
  */
 @WebServlet("/ServletDelete")
 public class ServletDelete extends HttpServlet {
@@ -32,7 +31,6 @@ public class ServletDelete extends HttpServlet {
      */
     public ServletDelete() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
@@ -40,31 +38,10 @@ public class ServletDelete extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("GET REQUEST ON /ServletDelete");
-		try {
-			Tracks tracks = new Tracks(); //create bean
-			DataSource ds = (DataSource) new InitialContext().lookup("java:/sqliteds");//get connection through datasource
-			Connection conn = ds.getConnection();
-			
-			//get all tracks
-			Statement stmt=conn.createStatement();  
-			ResultSet rs=stmt.executeQuery("SELECT tracks.TrackId, tracks.Name, albums.Title, genres.Name as genre, tracks.Composer FROM tracks, genres, albums WHERE tracks.AlbumId = albums.AlbumId AND genres.GenreId = tracks.GenreId ORDER BY tracks.TrackId");
 
-			//add tracks to bean
-			while(rs.next()){  
-				//System.out.println(rs.getInt(1)+"; "+rs.getString(2)+"; "+rs.getString(3)+"; "+rs.getString(4)+"; "+rs.getString(5));
-				tracks.addTrack(new Track(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5)));
-			}
-			//add bean to session
-			HttpSession session = request.getSession();
-			session.setAttribute("tracks", tracks);
-		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		request.getRequestDispatcher("deletetrack.jsp").forward(request, response);
+		request.setAttribute("choice", 1);
+		request.setAttribute("destination", "deletetrack.jsp");
+		request.getRequestDispatcher("/ServletGetInfo").forward(request, response);
 	}
 
 	/**
@@ -88,11 +65,12 @@ public class ServletDelete extends HttpServlet {
 			
 			Statement stmt=conn.createStatement();
 			stmt.executeUpdate("DELETE FROM  tracks WHERE TrackId = "+trackid);	//execute delete query
-		}catch (SQLException e) {
+			
+		}catch (SQLException e) {//TODO redirect to error page
 			System.err.println(e.getMessage());
 			e.printStackTrace();
 		} catch (NamingException e) {
-			// TODO Auto-generated catch block
+			System.err.println(e.getMessage());
 			e.printStackTrace();
 		}
 		response.sendRedirect("/CrudOperations-0.0.1-SNAPSHOT/ServletSelect");	//redirect to servletselect to update session data
