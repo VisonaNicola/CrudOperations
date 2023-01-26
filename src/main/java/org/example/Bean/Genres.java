@@ -25,6 +25,9 @@ public class Genres implements java.io.Serializable{
 	public List<Genre> getGenres() {
 		return genres;
 	}
+	public void addGenres(ArrayList<Genre> arrayList) {
+		genres=arrayList;
+	}
 
 	public void setGenres(List<Genre> albums) {
 		this.genres = albums;

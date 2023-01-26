@@ -25,6 +25,9 @@ public class Tracks implements java.io.Serializable{
 	public List<Track> getTracks() {
 		return tracks;
 	}
+	public void addTracks(List<Track> lista) {
+		tracks=lista;
+	}
 
 	public void setTracks(List<Track> tracce) {
 		this.tracks = tracce;

@@ -25,6 +25,9 @@ public class Albums implements java.io.Serializable{
 	public List<Album> getAlbums() {
 		return albums;
 	}
+	public void addAlbums(List<Album> list) {
+		albums=list;
+	}
 
 	public void setAlbums(List<Album> albums) {
 		this.albums = albums;
